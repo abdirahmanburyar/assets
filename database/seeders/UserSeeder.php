@@ -20,24 +20,5 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ]);
-
-        // Create additional users for testing
-        User::create([
-            'name' => 'John Doe',
-            'email' => 'john@assets.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
-
-        User::create([
-            'name' => 'Jane Smith',
-            'email' => 'jane@assets.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
-
-        $this->command->info('Users created successfully!');
-        $this->command->info('Admin credentials: admin@assets.com / password');
-        $this->command->info('Test users: john@assets.com / password, jane@assets.com / password');
     }
 }
