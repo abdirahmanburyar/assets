@@ -67,7 +67,10 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permissionData) {
-            Permission::create($permissionData);
+            Permission::updateOrCreate(
+                ['name' => $permissionData['name']],
+                $permissionData
+            );
         }
 
         // Create roles
