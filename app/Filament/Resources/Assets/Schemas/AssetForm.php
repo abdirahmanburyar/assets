@@ -71,8 +71,7 @@ class AssetForm
                                 $category = Category::create($data);
                                 return $category->id;
                             })
-                            ->createOptionAction(fn (Action $action) => $action->label('Add New Category'))
-                            ->createOptionFormVisible(fn (): bool => HasPermissions::userCan('category.create')),
+                            ->createOptionAction(fn (Action $action) => $action->label('Add New Category')),
                         
                         TextInput::make('item_description')
                             ->label('Item Description')
@@ -113,7 +112,6 @@ class AssetForm
                                 return $location->id;
                             })
                             ->createOptionAction(fn (Action $action) => $action->label('Add New Location'))
-                            ->createOptionFormVisible(fn (): bool => HasPermissions::userCan('location.create'))
                             ->live()
                             ->afterStateUpdated(fn (Set $set) => $set('sub_location_id', null)),
                         
@@ -149,8 +147,7 @@ class AssetForm
                                 $subLocation = SubLocation::create($data);
                                 return $subLocation->id;
                             })
-                            ->createOptionAction(fn (Action $action) => $action->label('Add New Sub-Location'))
-                            ->createOptionFormVisible(fn (): bool => HasPermissions::userCan('location.create')),
+                            ->createOptionAction(fn (Action $action) => $action->label('Add New Sub-Location')),
                         
                         Select::make('assigned_to_id')
                             ->label('Assigned To')
@@ -192,8 +189,7 @@ class AssetForm
                                 $assignee = Assignee::create($data);
                                 return $assignee->id;
                             })
-                            ->createOptionAction(fn (Action $action) => $action->label('Add New Assignee'))
-                            ->createOptionFormVisible(fn (): bool => HasPermissions::userCan('user.create')),
+                            ->createOptionAction(fn (Action $action) => $action->label('Add New Assignee')),
                     ]),
                 
                 Section::make('Financial Information')
@@ -270,8 +266,7 @@ class AssetForm
                                 $fundedSource = FundedSource::create($data);
                                 return $fundedSource->id;
                             })
-                            ->createOptionAction(fn (Action $action) => $action->label('Add New Funded Source'))
-                            ->createOptionFormVisible(fn (): bool => HasPermissions::userCan('category.create')),
+                            ->createOptionAction(fn (Action $action) => $action->label('Add New Funded Source')),
                     ]),
                 
                 Section::make('Maintenance & Status')

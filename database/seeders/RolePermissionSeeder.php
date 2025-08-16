@@ -113,11 +113,14 @@ class RolePermissionSeeder extends Seeder
             $permissionNames = $roleData['permissions'];
             unset($roleData['permissions']);
             
-            $role = Role::create($roleData);
+            $role = Role::updateOrCreate(
+                ['name' => $roleData['name']],
+                $roleData
+            );
             
             // Assign permissions to role
             $permissions = Permission::whereIn('name', $permissionNames)->get();
-            $role->permissions()->attach($permissions);
+            $role->permissions()->sync($permissions);
         }
 
         // Create or update super admin user
