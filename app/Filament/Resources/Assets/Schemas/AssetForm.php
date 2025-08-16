@@ -304,16 +304,6 @@ class AssetForm
                             ->maxLength(500)
                             ->placeholder('Additional information about this asset'),
                     ]),
-                
-                Section::make('Asset Documents')
-                    ->description('Upload and manage asset-related documents')
-                    ->schema([
-                        // Note: Document uploads will be handled in the Asset Resource
-                        // as a nested resource, not directly in the form
-                        // This section serves as a placeholder for document management
-                    ])
-                    ->collapsible()
-                    ->collapsed(),
             ]);
     }
 }
