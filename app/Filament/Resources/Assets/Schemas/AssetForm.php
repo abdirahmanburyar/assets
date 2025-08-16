@@ -83,11 +83,37 @@ class AssetForm
                 Section::make('Location & Assignment')
                     ->description('Where the asset is located and who it\'s assigned to')
                     ->schema([
+                        Select::make('region_id')
+                            ->label('Region')
+                            ->options(Region::pluck('name', 'id'))
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->createOptionForm([
+                                TextInput::make('name')
+                                    ->label('Region Name')
+                                    ->required()
+                                    ->maxLength(255),
+                            ])
+                            ->createOptionUsing(function (array $data): int {
+                                if (!HasPermissions::userCan('location.create')) {
+                                    throw new \Exception('You do not have permission to create regions.');
+                                }
+                                $region = Region::create($data);
+                                return $region->id;
+                            })
+                            ->createOptionAction(fn (Action $action) => $action->label('Add New Region'))
+                            ->live()
+                            ->afterStateUpdated(fn (Set $set) => $set('location_id', null)),
+                        
                         Select::make('location_id')
                             ->label('Location')
-                            ->options(Location::with('region')->get()->mapWithKeys(function ($location) {
-                                return [$location->id => $location->region->name . ' - ' . $location->name];
-                            }))
+                            ->options(function (Get $get) {
+                                $regionId = $get('region_id');
+                                if (!$regionId) return [];
+                                return Location::where('region_id', $regionId)
+                                    ->pluck('name', 'id');
+                            })
                             ->required()
                             ->searchable()
                             ->preload()
@@ -132,9 +158,12 @@ class AssetForm
                                     ->maxLength(255),
                                 Select::make('location_id')
                                     ->label('Location')
-                                    ->options(Location::with('region')->get()->mapWithKeys(function ($location) {
-                                        return [$location->id => $location->region->name . ' - ' . $location->name];
-                                    }))
+                                    ->options(function (Get $get) {
+                                        $regionId = $get('region_id');
+                                        if (!$regionId) return [];
+                                        return Location::where('region_id', $regionId)
+                                            ->pluck('name', 'id');
+                                    })
                                     ->required()
                                     ->searchable()
                                     ->preload()
