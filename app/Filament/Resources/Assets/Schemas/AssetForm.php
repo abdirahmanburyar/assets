@@ -155,13 +155,7 @@ class AssetForm
                                 TextInput::make('name')
                                     ->label('Sub-Location Name')
                                     ->required()
-                                    ->maxLength(255),
-                                TextInput::make('location_id')
-                                    ->label('Location')
-                                    ->default(function (Get $get) {
-                                        return $get('location_id');
-                                    })
-                                    ->disabled()
+                                    ->maxLength(255)
                                     ->helperText('This sub-location will be created under the currently selected location'),
                             ])
                             ->createOptionUsing(function (array $data, Get $get): int {
@@ -169,8 +163,8 @@ class AssetForm
                                     throw new \Exception('You do not have permission to create sub-locations.');
                                 }
                                 
-                                // Use the currently selected location if none provided
-                                $locationId = $data['location_id'] ?? $get('location_id');
+                                // Use the currently selected location
+                                $locationId = $get('location_id');
                                 if (!$locationId) {
                                     throw new \Exception('Please select a location first.');
                                 }
