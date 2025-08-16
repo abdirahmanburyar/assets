@@ -156,24 +156,29 @@ class AssetForm
                                     ->label('Sub-Location Name')
                                     ->required()
                                     ->maxLength(255),
-                                Select::make('location_id')
+                                TextInput::make('location_id')
                                     ->label('Location')
-                                    ->options(function (Get $get) {
-                                        $regionId = $get('region_id');
-                                        if (!$regionId) return [];
-                                        return Location::where('region_id', $regionId)
-                                            ->pluck('name', 'id');
+                                    ->default(function (Get $get) {
+                                        return $get('location_id');
                                     })
-                                    ->required()
-                                    ->searchable()
-                                    ->preload()
-                                    ->helperText('Select the location where this sub-location will be created'),
+                                    ->disabled()
+                                    ->helperText('This sub-location will be created under the currently selected location'),
                             ])
-                            ->createOptionUsing(function (array $data): int {
+                            ->createOptionUsing(function (array $data, Get $get): int {
                                 if (!HasPermissions::userCan('location.create')) {
                                     throw new \Exception('You do not have permission to create sub-locations.');
                                 }
-                                $subLocation = SubLocation::create($data);
+                                
+                                // Use the currently selected location if none provided
+                                $locationId = $data['location_id'] ?? $get('location_id');
+                                if (!$locationId) {
+                                    throw new \Exception('Please select a location first.');
+                                }
+                                
+                                $subLocation = SubLocation::create([
+                                    'name' => $data['name'],
+                                    'location_id' => $locationId,
+                                ]);
                                 return $subLocation->id;
                             })
                             ->createOptionAction(fn (Action $action) => $action->label('Add New Sub-Location')),
